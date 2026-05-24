@@ -2,6 +2,10 @@ import os
 from dataclasses import dataclass
 from decimal import Decimal
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 @dataclass(frozen=True)
 class RewardsConfig:
@@ -15,13 +19,20 @@ class RewardsConfig:
     points_percentage: Decimal
 
 
+def _require(key: str) -> str:
+    value = os.getenv(key)
+    if not value:
+        raise ValueError(f"Missing required environment variable: {key}")
+    return value
+
+
 def load_config() -> RewardsConfig:
     return RewardsConfig(
-        host=os.getenv("RABBIT_HOST", "213.199.42.57"),
-        port=int(os.getenv("RABBIT_PORT", "5672")),
-        virtual_host=os.getenv("RABBIT_VHOST", "/"),
-        user=os.getenv("RABBIT_USER", "students"),
-        password=os.getenv("RABBIT_PASSWORD", "Ut3c2026"),
+        host=_require("RABBIT_HOST"),
+        port=int(_require("RABBIT_PORT")),
+        virtual_host=_require("RABBIT_VHOST"),
+        user=_require("RABBIT_USER"),
+        password=_require("RABBIT_PASSWORD"),
         dinner_queue=os.getenv("DINNER_QUEUE", "dinner.registered"),
         notification_queue=os.getenv("NOTIFICATION_QUEUE", "reward.processed"),
         points_percentage=Decimal(os.getenv("POINTS_PERCENTAGE", "0.10")),

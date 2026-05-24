@@ -139,12 +139,23 @@ curl -X POST http://localhost:8000/dinners \
 
 ### Análisis SonarQube
 
+Si tienes `sonar-scanner` instalado en tu sistema:
+
 ```bash
 sonar-scanner
 ```
 
-Lee `sonar-project.properties` y sube los resultados a
-`https://sonarqube.ingsoftware.lat/`.
+En **NixOS** (temporal, sin contaminar el sistema):
+
+```bash
+nix-shell -p sonar-scanner-cli --run "sonar-scanner -Dsonar.scanner.skipJreProvisioning=true"
+```
+
+> La flag `skipJreProvisioning` es necesaria en NixOS porque sonar-scanner
+> intenta descargar su propio JRE y ese binario no encuentra el linker dinámico.
+
+Lee `sonar-project.properties` y sube los resultados a:
+[`https://sonarqube.ingsoftware.lat/dashboard?id=Elmer_Villegas_t1`](https://sonarqube.ingsoftware.lat/dashboard?id=Elmer_Villegas_t1)
 
 ## 5. Justificación del broker
 
