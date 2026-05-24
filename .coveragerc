@@ -1,8 +1,11 @@
 [run]
+relative_files = True
 omit =
     */__init__.py
     */main.py
     */config.py
+    tests/*
+    tests/**/*
     consumer-rabbit.py
     producer-rabbit.py
     consumer-kafka.py

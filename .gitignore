@@ -13,3 +13,11 @@ htmlcov/
 .idea/
 .vscode/
 .DS_Store
+
+# Nix
+result
+result-*
+.direnv/
+shell.nix
+default.nix
+flake.lock
