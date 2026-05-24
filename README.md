@@ -1,7 +1,4 @@
-# Laboratorio 8 — Sistema de Recompensas (Arquitectura Hexagonal + EDA)
-
-**Curso:** CS3081 - Ingeniería de Software · **UTEC**
-**Autor:** Elmer Villegas
+# Laboratorio 8 - Sistema de Recompensas (Arquitectura Hexagonal + EDA)
 
 Sistema de recompensas para restaurantes implementado con **Arquitectura
 Hexagonal (Ports & Adapters)** y **Event-Driven Architecture** sobre
@@ -18,16 +15,7 @@ desacopla mediante mensajería asíncrona.
 
 Flujo (Figura 1 del enunciado):
 
-```
-[Restaurant API] --dinner.registered--> RabbitMQ --> [Rewards Service]
-                                                          |
-                                                          | reward.processed
-                                                          ↓
-                                                       RabbitMQ
-                                                          |
-                                                          ↓
-                                                  [Notifications Service]
-```
+![alt text](image.png)
 
 ## 2. Arquitectura
 
@@ -35,7 +23,7 @@ Se aplicó **Arquitectura Hexagonal** en los tres microservicios. Cada uno
 tiene tres capas con dependencias hacia adentro:
 
 ```
-infrastructure  →  application  →  domain
+infrastructure  ->  application  ->  domain
    (adapters)       (use cases)    (entities + ports)
 ```
 
@@ -119,22 +107,20 @@ Esto garantiza:
 | `reward.processed` | rewards_service | notifications_service | `{card_number, points_added, total_points}` |
 
 **Política de puntos** (`PercentagePointsPolicy`): 10 % del monto consumido por
-defecto. Es una estrategia: cambiarla a *cashback fijo* solo requiere otra
-implementación del puerto `PointsPolicy`.
+defecto.
 
 ## 4. Cómo correr
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate         # (fish: source .venv/bin/activate.fish)
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Tests + cobertura
+### Tests
 
 ```bash
 pytest
-# genera coverage.xml en la raíz (lo lee SonarQube)
 ```
 
 ### Levantar los servicios (3 terminales)
@@ -176,7 +162,7 @@ Lee `sonar-project.properties` y sube los resultados a
 
 Se eligió **RabbitMQ** sobre Kafka/ActiveMQ porque:
 
-1. La Figura 1 muestra ActiveMQ (modelo AMQP); RabbitMQ usa el mismo modelo
+1. La Figura 1 se muestra ActiveMQ (modelo AMQP); RabbitMQ usa el mismo modelo
    `Producer → Exchange → Queue → Consumer`.
 2. El caso de uso es *work queue* transaccional, no streaming masivo (Kafka
    sería sobredimensionar).
@@ -186,8 +172,7 @@ Se eligió **RabbitMQ** sobre Kafka/ActiveMQ porque:
 
 ## 6. Calidad
 
-- **Tests**: `pytest` + `pytest-cov`, cobertura ≥ 85 % (excluyendo
-  `main.py`, `__init__.py`, `config.py`).
+- **Tests**: `pytest` + `pytest-cov`, cobertura ≥ 85 %
 - **Análisis estático**: SonarQube (Reliability, Security, Maintainability,
   Duplications).
 - **Diseño**: Puertos abstractos (`ABC`), entidades inmutables
