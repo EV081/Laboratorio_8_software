@@ -18,7 +18,14 @@ class DinnerRequest(BaseModel):
 def create_app(use_case: RegisterDinnerUseCase) -> FastAPI:
     app = FastAPI(title="Restaurant Service")
 
-    @app.post("/dinners", status_code=202)
+    @app.post(
+        "/dinners",
+        status_code=202,
+        responses={
+            400: {"description": "Invalid dinner data (domain validation failed)"},
+            422: {"description": "Request payload validation error"},
+        },
+    )
     def register_dinner(request: DinnerRequest) -> dict:
         try:
             dinner = Dinner(
