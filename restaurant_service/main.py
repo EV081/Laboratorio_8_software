@@ -1,3 +1,5 @@
+import os
+
 import pika
 import uvicorn
 
@@ -25,4 +27,6 @@ def build_app():
 
 
 if __name__ == "__main__":
-    uvicorn.run(build_app(), host="0.0.0.0", port=8000)
+    api_host = os.getenv("API_HOST", "127.0.0.1")
+    api_port = int(os.getenv("API_PORT", "8000"))
+    uvicorn.run(build_app(), host=api_host, port=api_port)
