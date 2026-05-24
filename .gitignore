@@ -19,6 +19,9 @@ htmlcov/
 .env.local
 .env.*.local
 
+# Claude Code (estado local de la herramienta)
+.claude/
+
 # Nix
 result
 result-*
