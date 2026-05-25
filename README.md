@@ -57,31 +57,15 @@ Esto garantiza:
 
 **Explicación del diagrama**                                                                      
 
-Identificamos tres actores. El Restaurante es el actor primario que dispara todo el flujo
-cuando registra una cena; el Cliente es primario cuando consulta su saldo y aparece como      
-receptor cuando le llega una notificación; y el Servicio de Email es un actor
-secundario, un proveedor externo al que le delegamos el envío real del correo.                
+Identificamos tres actores. El Restaurante es el actor primario que dispara todo el flujo cuando registra una cena; el Cliente es primario cuando consulta su saldo y aparece como receptor cuando le llega una notificación; y el Servicio de Email es un actor secundario, un proveedor externo al que le delegamos el envío real del correo.                
 
-El flujo principal arranca con Registrar Cena (UC1), que el restaurante invoca a través de la 
-API REST. Este caso siempre incluye Publicar Evento de Transacción (UC2), porque el registro
-no termina hasta que el evento se publica en RabbitMQ. UC2 a su vez incluye 
-Calcular Puntos / Cashback (UC3), que aplica la política configurada (por defecto, 10 % del 
-consumo), y este se incluye dentro de Actualizar Cuenta de Recompensas (UC4), que persiste los
-puntos en la cuenta del cliente. Los tres <<include>> representan que ninguno de estos pasos
-es opcional: si falla uno, el flujo no se completa.
+El flujo principal arranca con Registrar Cena (UC1), que el restaurante invoca a través de la API REST. Este caso siempre incluye Publicar Evento de Transacción(UC2), porque el registro no termina hasta que el evento se publica en RabbitMQ. UC2 a su vez incluye  Calcular Puntos / Cashback (UC3), que aplica la política configurada (por defecto, 10 % del consumo), y este se incluye dentro de Actualizar Cuenta de Recompensas (UC4), que persiste los puntos en la cuenta del cliente. Los tres <<include>> representan que ninguno de estos pasos es opcional: si falla uno, el flujo no se completa.
 
-Dos casos extienden UC4 porque solo se ejecutan bajo cierta condición. Crear Cuenta de        
-Recompensas (UC7) se dispara únicamente cuando la tarjeta aparece por primera vez en el
-sistema, es decir, cuando no existe una cuenta previa asociada a ese card_number. Notificar al Cliente por email (UC5) se 
-modela como extensión porque, además de depender de la actualización exitosa de la cuenta,
-requiere salir del sistema para llegar al proveedor externo de correo.
+Dos casos extienden UC4 porque solo se ejecutan bajo cierta condición. Crear Cuenta de Recompensas (UC7) se dispara únicamente cuando la tarjeta aparece por primera vez en el sistema, es decir, cuando no existe una cuenta previa asociada a ese card_number. Notificar al Cliente por email (UC5) se  modela como extensión porque, además de depender de la actualización exitosa de la cuenta, requiere salir del sistema para llegar al proveedor externo de correo.
 
-Por último, Consultar Saldo de Puntos (UC6) es un flujo independiente que el cliente ejerce   
-por su cuenta, sin estar encadenado al registro de cenas.
+Por último, Consultar Saldo de Puntos (UC6) es un flujo independiente que el cliente ejerce por su cuenta, sin estar encadenado al registro de cenas.
 
-El actor secundario **"Servicio de Email"** representa un proveedor externo
-(ej. SendGrid, AWS SES) al que el sistema delega el envío real del correo.
-La implementación actual simula este envío, pero el puerto `NotificationSender` permite sustituir el adaptador sin modificar el dominio ni la capa de aplicación, manteniendo la arquitectura hexagonal.
+El actor secundario **"Servicio de Email"** representa un proveedor externo (ej. SendGrid, AWS SES) al que el sistema delega el envío real del correo. La implementación actual simula este envío, pero el puerto `NotificationSender` permite sustituir el adaptador sin modificar el dominio ni la capa de aplicación, manteniendo la arquitectura hexagonal.
 
 ## 3. Mensajería
 
