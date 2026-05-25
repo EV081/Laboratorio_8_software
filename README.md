@@ -130,22 +130,14 @@ sonar-scanner
 Se eligió **RabbitMQ** sobre Kafka/ActiveMQ porque:
 
 1. La Figura 1 se muestra ActiveMQ (modelo AMQP); RabbitMQ usa el mismo modelo
-   `Producer → Exchange → Queue → Consumer`.
+   `Producer -> Exchange -> Queue -> Consumer`.
 2. El caso de uso es *work queue* transaccional, no streaming masivo (Kafka
    sería sobredimensionar).
 3. Gracias a hexagonal, migrar a Kafka requiere reemplazar
    `rabbit_consumer.py` / `rabbit_publisher.py` — el resto del código no
    cambia.
 
-## 6. Calidad
-
-- **Tests**: `pytest` + `pytest-cov`, cobertura ≥ 85 %
-- **Análisis estático**: SonarQube (Reliability, Security, Maintainability,
-  Duplications).
-- **Diseño**: Puertos abstractos (`ABC`), entidades inmutables
-  (`dataclass(frozen=True)`), validación en construcción.
-
-## 7. Evidencia de ejecución de pruebas
+## 6. Evidencia de ejecución de pruebas y Calidad
 
 Ejecución de las pruebas automatizadas con `pytest`:
 
