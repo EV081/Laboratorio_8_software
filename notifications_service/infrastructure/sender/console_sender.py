@@ -9,4 +9,4 @@ class ConsoleNotificationSender(NotificationSender):
         self._writer = writer
 
     def send(self, notification: Notification) -> None:
-        self._writer(f" [✉] {notification.message()}")
+        self._writer(f"{notification.message()}")
