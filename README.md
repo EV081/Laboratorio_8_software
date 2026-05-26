@@ -22,6 +22,11 @@ Flujo (Figura 1 del enunciado):
 
 ## 2. Arquitectura
 
+El problema combina dos exigencias: el
+negocio necesita procesar muchas cenas en tiempo real sin que un servicio lento (el envío de correo) frene al resto, y al mismo tiempo la lógica de puntos debe poder evolucionar sin reescribir la infraestructura. **EDA con RabbitMQ** resuelve lo primero porque desacopla los servicios en el tiempo: quien registra la cena no espera a que se calculen puntos ni a que salga el email, solo publica un evento y sigue. **La Arquitectura Hexagonal** resuelve lo segundo porque aísla el dominio (reglas) de los detalles técnicos (RabbitMQ, FastAPI, persistencia), de modo que cambiar de broker, de base de datos o de proveedor de email no toca la lógica de negocio, solo el adaptador correspondiente.
+
+### Implementación
+
 La solución que se implemento fu con tres microservicios que se comunican de forma
 asíncrona a través de RabbitMQ, siguiendo un estilo **Event-Driven**: el
 modulo de Restaurantes recibe las cenas por una API REST y publica el evento
